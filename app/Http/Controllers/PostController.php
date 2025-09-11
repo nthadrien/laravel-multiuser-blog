@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -17,25 +19,44 @@ class PostController extends Controller
         $categories = Category::get();
         $posts = Post::orderBy('created_at','desc')->paginate(6);
         return view(
-            'dashboard',
-            ['categories'=>$categories,'posts'=>$posts]
+            'posts.index',['categories'=>$categories,'posts'=>$posts]
         );
     }
-
+ 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //
+        $categories = Category::get();
+        return view('posts.create', ['categories'=>$categories]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        //
+    {        
+        // redirect()
+        $data = $request -> validate([
+            'image'=>['required','image','mimes:jpeg,png,jpg,gif','max:2000'],
+            'title'=>['required'],
+            'content'=>['required'],
+            'category_id'=> ['required','exists:categories,id'],
+            'publish_at'=>['nullable','datetime']
+        ]);
+
+        $image = $data['image'];
+        unset($data['image']);
+        $data['user_id'] = Auth::id();
+        $data['slug'] = Str::slug($data['title']);
+
+        $imagePath = $image->store('posts','public');
+        $data['image']=$imagePath;
+
+        Post::create($data);
+        return redirect()-> route('dashboard');
+        
     }
 
     /**

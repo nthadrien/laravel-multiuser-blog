@@ -19,11 +19,11 @@ class DatabaseSeeder extends Seeder
         User::factory(4)->create();
 
 
-        $categories = ['Tachnology','health','science','sport','politics','entertainment'];
+        $categories = ['Technology','health','science','sport','politics','entertainment'];
         foreach($categories as $category ) {
             Category::create(['name'=>$category]);
         }
 
-        Post::factory(60)->create();
+        // Post::factory(60)->create();
     }
 }

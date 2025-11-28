@@ -1,5 +1,1 @@
-
-<div>
-    <img src="/like.png" class="h-4" alt="logo" />
-    <strong>Blog</strong>
-</div>
+<img src="/logo.svg" class="h-4" alt="">
